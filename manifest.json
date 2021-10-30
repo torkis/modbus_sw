@@ -1,0 +1,11 @@
+{
+  "domain": "modbus_sw",
+  "name": "Modbus Switch",
+  "documentation": "https://www.home-assistant.io/integrations/modbus_sw",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": [
+    "@torkis"
+  ],
+  "iot_class": "local_polling"
+}

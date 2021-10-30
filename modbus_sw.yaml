@@ -1,0 +1,109 @@
+# modbus_sw configuration file
+- name: port1
+  port: /dev/ttyAMA1
+  baudrate: 9600
+  stopbits: 1
+  bytesize: 8
+  parity: N
+  rtsmode: U
+  rtspin: 7
+  rtsdelay: 100
+  devices:
+    - device_id: modbus_sw_2
+      slave_id: 2
+      coils:
+        - name: szoba2_jobb
+          id: 0
+        - name: szoba2_bal
+          id: 1
+        - name: szoba1_bal
+          id: 2
+        - name: szoba1_jobb
+          id: 3
+        - name: eloszoba
+          id: 4
+        - name: furdo1
+          id: 5
+        - name: furdo1_pult
+          id: 6
+        - name: wc
+          id: 7
+    - device_id: modbus_sw_3
+      slave_id: 3
+      coils:
+        - name: kozlekedo1
+          id: 0
+        - name: tarolo
+          id: 1
+        - name: gepeszet
+          id: 2
+        - name: Switch3-3
+          id: 3
+        - name: Switch3-4
+          id: 4
+        - name: Switch3-5
+          id: 5
+        - name: Switch3-6
+          id: 6
+        - name: Switch3-7
+          id: 7
+    - device_id: modbus_sw_4
+      slave_id: 4
+      coils:
+        - name: Switch4-0
+          id: 0
+        - name: nappali_kozep
+          id: 1
+        - name: Switch4-2
+          id: 2
+        - name: kozlekedo2
+          id: 3
+        - name: etkezo
+          id: 4
+        - name: nappali_jobb
+          id: 5
+        - name: konyha
+          id: 6
+        - name: Switch4-7
+          id: 7
+    - device_id: modbus_sw_5
+      slave_id: 5
+      coils:
+        - name: dolgozo_jobb
+          id: 0
+        - name: kozlekedo3
+          id: 1
+        - name: dolgozo_bal
+          id: 2
+        - name: halo_bal
+          id: 3
+        - name: Switch5-4
+          id: 4
+        - name: furdo2
+          id: 5
+        - name: halo_jobb
+          id: 6
+        - name: furdo2_pult
+          id: 7
+- name: port2
+  port: /dev/ttyAMA2
+  baudrate: 9600
+  stopbits: 1
+  bytesize: 8
+  parity: N
+  rtsmode: U
+  rtspin: 11
+  rtsdelay: 100
+  devices:
+    - device_id: modbus_sw_6
+      slave_id: 6
+      coils:
+        - name: heating_main
+          id: 0
+        - name: heating_zone1
+          id: 7
+        - name: heating_zone2
+          id: 6
+        - name: heating_hmv
+          id: 5
+
