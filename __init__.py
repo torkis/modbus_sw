@@ -16,6 +16,7 @@ from homeassistant.const import (
     CONF_DEVICES,
     CONF_ID,
     CONF_DEVICE_ID,
+    CONF_MODE
 )
 
 from .const import *
@@ -30,12 +31,23 @@ COIL_SCHEMA_ENTRY = vol.Schema(
     }
 )
 
+INPUT_SCHEMA_ENTRY = vol.Schema(
+    {
+        vol.Required(CONF_ID): vol.Range(min=1, max=31),
+        vol.Required(CONF_NAME): cv.string,
+        vol.Required(CONF_MODE): vol.Any("temperature", "voltage")
+    }
+)
+
 DEVICE_SCHEMA_ENTRY = vol.Schema(
     {
         vol.Required(CONF_DEVICE_ID): cv.string,
         vol.Required(CONF_SLAVE_ID): vol.Range(min=1, max=247),
         vol.Optional(CONF_COILS): vol.All(
             cv.ensure_list, [COIL_SCHEMA_ENTRY]
+        ),
+        vol.Optional(CONF_INPUTS): vol.All(
+            cv.ensure_list, [INPUT_SCHEMA_ENTRY]
         )
     }
 )
@@ -66,7 +78,6 @@ CONFIG_SCHEMA = vol.Schema(
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-
     if DOMAIN not in config:
         return True
 
@@ -75,7 +86,18 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         ports.append(ModbusPort(hass, port_config))
     hass.data[DOMAIN] = ports
 
-    await discovery.async_load_platform(hass, "switch", DOMAIN, { DOMAIN: ""}, config)
+    has_coil = False
+    has_input = False
+    for port in ports:
+        for dev in port.devices:
+            if not has_coil and len(dev.coils) > 0:
+                has_coil = True
+            if not has_input and len(dev.inputs) > 0:
+                has_input = True
+    if has_coil:
+        await discovery.async_load_platform(hass, "switch", DOMAIN, {DOMAIN: ""}, config)
+    if has_input:
+        await discovery.async_load_platform(hass, "sensor", DOMAIN, {DOMAIN: ""}, config)
 
     for port in ports:
         await port.async_enable_auto_update(timedelta(seconds=30), True)

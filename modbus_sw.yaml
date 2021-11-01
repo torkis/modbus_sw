@@ -8,6 +8,7 @@
   rtsmode: U
   rtspin: 7
   rtsdelay: 100
+  autoupdate: 30
   devices:
     - device_id: modbus_sw_2
       slave_id: 2
@@ -28,6 +29,13 @@
           id: 6
         - name: wc
           id: 7
+#      inputs:
+#        - name: modbus_sw_2_temp
+#          id: 1
+#          mode: temperature
+#        - name: modbus_sw_2_vin
+#          id: 4
+#          mode: voltage
     - device_id: modbus_sw_3
       slave_id: 3
       coils:
@@ -94,6 +102,7 @@
   rtsmode: U
   rtspin: 11
   rtsdelay: 100
+  autoupdate: 30
   devices:
     - device_id: modbus_sw_6
       slave_id: 6
