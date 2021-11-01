@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from typing import List
+from datetime import timedelta
 import voluptuous as vol
 
 from homeassistant.core import HomeAssistant
@@ -22,8 +22,6 @@ from .const import *
 from .device import ModbusPort
 
 _LOGGER = logging.getLogger(__name__)
-
-# PLATFORMS = ["switch"]
 
 COIL_SCHEMA_ENTRY = vol.Schema(
     {
@@ -78,4 +76,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     hass.data[DOMAIN] = ports
 
     await discovery.async_load_platform(hass, "switch", DOMAIN, { DOMAIN: ""}, config)
+
+    for port in ports:
+        await port.async_enable_auto_update(timedelta(seconds=30), True)
+
     return True
