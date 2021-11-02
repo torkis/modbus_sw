@@ -1,6 +1,7 @@
 {
   "domain": "modbus_sw",
   "name": "Modbus Switch",
+  "version": "1.0",
   "documentation": "https://www.home-assistant.io/integrations/modbus_sw",
   "requirements": [],
   "dependencies": [],

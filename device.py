@@ -71,6 +71,7 @@ class ModbusPort:
         # lock for modbus port calls, because these can't be concurrent
         self._lock = asyncio.Lock()
         self._auto_update_remover = None
+        self._delay = 30 / 1000
 
         self._driver = ModbusRtu(
             config.get(CONF_PORT),
@@ -138,17 +139,17 @@ class ModbusPort:
                     _LOGGER.info(f"{i}:{val}")
                     device.inputs[start + i].set_value(bool(val))
 
-    def _update_state(self) -> None:
-        """Update all device state in port."""
-        for device in self.devices:
-            self._update_device_coils(device)
-            self._update_device_inputs(device)
-
     async def _async_update_state(self, event_time: timedelta = None) -> None:
         """Update all device state"""
         async with self._lock:
             async with timeout(10):
-                await self._hass.async_add_executor_job(self._update_state)
+                for device in self.devices:
+                    if len(device.coils):
+                        await self._hass.async_add_executor_job(self._update_device_coils, device)
+                    if len(device.inputs):
+                        await self._hass.async_add_executor_job(self._update_device_inputs, device)
+                    if self._delay:
+                        await asyncio.sleep(30 / 1000)
 
     async def async_enable_auto_update(self, interval: timedelta, call_update: bool = False):
         """Enable auto update function for all devices in port."""
@@ -207,10 +208,12 @@ class CoilEntity(SwitchEntity):
     async def async_turn_on(self, **kwargs: Any) -> None:
         await self.device.port.async_write_coil(self, True)
         self._attr_is_on = True
+        self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         await self.device.port.async_write_coil(self, False)
         self._attr_is_on = False
+        self.async_write_ha_state()
 
     def set_is_on(self, value: bool):
         """Set the state without calling modbus. Called by the update state from ModbusPort"""

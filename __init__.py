@@ -95,8 +95,10 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
             if not has_input and len(dev.inputs) > 0:
                 has_input = True
     if has_coil:
+        _LOGGER.info("Load switch platform for add coil entities")
         await discovery.async_load_platform(hass, "switch", DOMAIN, {DOMAIN: ""}, config)
     if has_input:
+        _LOGGER.info("Load sensor platform for add input entities")
         await discovery.async_load_platform(hass, "sensor", DOMAIN, {DOMAIN: ""}, config)
 
     for port in ports:
